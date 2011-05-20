@@ -1,0 +1,1 @@
+An excercise from ruby workshop in BBC. Client/server (restful) app where the player (client) should visit rooms in the dungeon until it finds (or not) the treasure chamber. Each new room is requested from the server.
