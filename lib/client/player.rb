@@ -11,6 +11,10 @@ class Player
     self.current_room = dungeon.enter_room(room_id)
   end
 
+  def next_room_id
+    current_room.exits.sample
+  end
+
   private
 
   attr_accessor :dungeon

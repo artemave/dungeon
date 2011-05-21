@@ -1,6 +1,5 @@
+require './spec/spec_helper'
 require 'client/player'
-require 'client/dungeon'
-require 'client/room'
 
 describe Player do
   before do
@@ -42,10 +41,15 @@ describe Player do
   end
 
   context 'in order to move to other rooms' do
-    it 'should follow exit from the current room'
+    it 'should follow exits from the current room' do
+      room = double('Room', :exits => [1,3,42], :type => :whatever)
+      @player.send(:current_room=, room)
+
+      @player.next_room_id.should be_in room.exits
+    end
   end
 
-  context 'in order to to try different routes' do
+  context 'in order to try different routes' do
     it 'should be able to go back to the previous room'
   end
 
