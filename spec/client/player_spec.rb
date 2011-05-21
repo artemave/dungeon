@@ -64,6 +64,9 @@ describe Player do
       @player.previous_room.should be room1
     end
   end
+
+  context 'in order to comply with the rools' do
+    it 'should not be possible to enter rooms other than exits from the current room OR previous room'
   end
 
   context 'in order to not loop endlessly' do
