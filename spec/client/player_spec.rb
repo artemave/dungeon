@@ -9,24 +9,36 @@ describe Player do
 
   context 'in order to start the game' do
     it 'should enter the dungeon' do
-      entrance = double('Room')
+      entrance = double('Room', :type => :whatever)
       dungeon = double('Dungeon')
       dungeon.stub(:enter) { entrance }
 
-      @player.enter(dungeon)
+      @player.current_room.should_not be entrance
+      @player.enter_dungeon(dungeon)
       @player.current_room.should be entrance
     end
   end
 
   context 'in order to win the game' do
     it 'should find the treasure chamber' do
-      @player.current_room = double('Room', :type => :treasure_chamber)
+      @player.send(:current_room=, double('Room', :type => :treasure_chamber))
       @player.result.should eq :won
     end
   end
 
   context 'in order to find the treasure chamber' do
-    it 'should move to other rooms'
+    it 'should move to other rooms' do
+      room = double('Room', :id => 42, :type => :whatever)
+
+      dungeon = double('Dungeon')
+      dungeon.stub(:enter_room).and_return(room)
+      dungeon.should_receive(:enter_room).with(room.id)
+      @player.send(:dungeon=, dungeon)
+
+      @player.current_room.should_not be room
+      @player.enter_room(room.id)
+      @player.current_room.should be room
+    end
   end
 
   context 'in order to move to other rooms' do
