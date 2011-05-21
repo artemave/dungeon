@@ -53,7 +53,17 @@ describe Player do
   end
 
   context 'in order to try different routes' do
-    it 'should be able to go back to the previous room'
+    it 'should be able to go back to the previous room' do
+      room1 = double('Room', :type => :whatever)
+      room2 = double('Room', :type => :whatever)
+
+      @player.enter_room(room1)
+      @player.previous_room.should be nil
+
+      @player.enter_room(room2)
+      @player.previous_room.should be room1
+    end
+  end
   end
 
   context 'in order to not loop endlessly' do

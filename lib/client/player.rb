@@ -1,5 +1,5 @@
 class Player
-  attr_reader :current_room, :result
+  attr_reader :current_room, :previous_room, :result
 
   def enter_dungeon(dungeon)
     enter_room(dungeon.entrance)
@@ -7,6 +7,8 @@ class Player
   end
 
   def enter_room(room)
+    @previous_room = @current_room
+
     @current_room = if room.kind_of?(Integer)
                       dungeon.reveal_room(room)
                     else
