@@ -9,8 +9,7 @@ describe Player do
   context 'in order to start the game' do
     it 'should enter the dungeon' do
       entrance = double('Room', :type => :whatever)
-      dungeon = double('Dungeon')
-      dungeon.stub(:enter) { entrance }
+      dungeon = double('Dungeon', :entrance => entrance)
 
       @player.current_room.should_not be entrance
       @player.enter_dungeon(dungeon)
@@ -20,7 +19,12 @@ describe Player do
 
   context 'in order to win the game' do
     it 'should find the treasure chamber' do
-      @player.send(:current_room=, double('Room', :type => :treasure_chamber))
+      treasure_chamber = double('Room', :type => :treasure_chamber)
+      dungeon = double('Dungeon', :reveal_room => treasure_chamber)
+      @player.send(:dungeon=, dungeon)
+
+      @player.result.should_not eq :won
+      @player.enter_room(treasure_chamber)
       @player.result.should eq :won
     end
   end
@@ -29,9 +33,8 @@ describe Player do
     it 'should move to other rooms' do
       room = double('Room', :id => 42, :type => :whatever)
 
-      dungeon = double('Dungeon')
-      dungeon.stub(:enter_room).and_return(room)
-      dungeon.should_receive(:enter_room).with(room.id)
+      dungeon = double('Dungeon', :reveal_room => room)
+      dungeon.should_receive(:reveal_room).with(room.id)
       @player.send(:dungeon=, dungeon)
 
       @player.current_room.should_not be room
@@ -43,7 +46,7 @@ describe Player do
   context 'in order to move to other rooms' do
     it 'should follow exits from the current room' do
       room = double('Room', :exits => [1,3,42], :type => :whatever)
-      @player.send(:current_room=, room)
+      @player.enter_room(room)
 
       @player.next_room_id.should be_in room.exits
     end

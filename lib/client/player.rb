@@ -2,17 +2,21 @@ class Player
   attr_reader :current_room, :result
 
   def enter_dungeon(dungeon)
-    entrance = dungeon.enter
-    self.current_room = entrance
+    enter_room(dungeon.entrance)
     self.dungeon = dungeon
   end
 
-  def enter_room(room_id)
-    self.current_room = dungeon.enter_room(room_id)
+  def enter_room(room)
+    @current_room = if room.kind_of?(Integer)
+                      dungeon.reveal_room(room)
+                    else
+                      room
+                    end
+    set_result(@current_room)
   end
 
   def next_room_id
-    current_room.exits.sample
+    @current_room.exits.sample
   end
 
   private
@@ -25,10 +29,4 @@ class Player
                 :won
               end
   end
-
-  def current_room=(room)
-    @current_room = room
-    set_result(room)
-  end
-
 end
