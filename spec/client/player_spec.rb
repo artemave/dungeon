@@ -5,22 +5,23 @@ require 'client/room'
 describe Player do
   before do
     @player = Player.new
-    @dungeon = Dungeon.new
   end
 
   context 'in order to start the game' do
     it 'should enter the dungeon' do
-      entrance = Room.new
-      @dungeon.should_receive(:enter).and_return(entrance)
+      entrance = double('Room')
+      dungeon = double('Dungeon')
+      dungeon.stub(:enter) { entrance }
 
-      @player.enter(@dungeon)
+      @player.enter(dungeon)
       @player.current_room.should be entrance
     end
   end
 
   context 'in order to win the game' do
     it 'should find the treasure chamber' do
-      #@player.result.should == :won
+      @player.current_room = double('Room', :type => :treasure_chamber)
+      @player.result.should eq :won
     end
   end
 
