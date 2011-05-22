@@ -3,80 +3,76 @@ require 'client/player'
 
 describe Player do
   before do
+    @dungeon = double('Dungeon')
+    @room = double('Room', :id => 1, :exits => [2], :type => :room)
     @player = Player.new
+    @player.instance_variable_set(:@dungeon, @dungeon)
+    @player.instance_variable_set(:@current_room, @room)
   end
 
   context 'in order to start the game' do
     it 'should enter the dungeon' do
-      entrance = double('Room', :type => :whatever)
-      dungeon = double('Dungeon', :entrance => entrance)
+      entrance = double('Room', :id => 1)
+      @dungeon.stub(:entrance).and_return(entrance)
 
       @player.current_room.should_not be entrance
-      @player.enter_dungeon(dungeon)
+      @player.enter_dungeon(@dungeon)
       @player.current_room.should be entrance
     end
   end
 
   context 'in order to win the game' do
-    it 'should find the treasure chamber' do
+    it 'should find treasure chamber' do
       treasure_chamber = double('Room', :type => :treasure_chamber)
-      dungeon = double('Dungeon', :reveal_room => treasure_chamber)
-      @player.send(:dungeon=, dungeon)
 
       @player.result.should_not eq :won
-      @player.enter_room(treasure_chamber)
+      @player.instance_variable_set(:@current_room, treasure_chamber)
       @player.result.should eq :won
     end
+
   end
 
   context 'in order to find the treasure chamber' do
     it 'should move to other rooms' do
-      room = double('Room', :id => 42, :type => :whatever)
+      next_room = double('Room', :id => 2)
+      @dungeon.stub(:reveal_room).with(next_room.id).and_return(next_room)
 
-      dungeon = double('Dungeon', :reveal_room => room)
-      dungeon.should_receive(:reveal_room).with(room.id)
-      @player.send(:dungeon=, dungeon)
-
-      @player.current_room.should_not be room
-      @player.enter_room(room.id)
-      @player.current_room.should be room
+      @player.current_room.should_not be next_room
+      @player.enter_room(next_room.id)
+      @player.current_room.should be next_room
     end
   end
 
   context 'in order to move to other rooms' do
-    it 'should follow exits from the current room' do
-      room = double('Room', :exits => [1,3,42], :type => :whatever)
-      @player.enter_room(room)
-
-      @player.next_room_id.should be_in room.exits
+    it 'should know exits from the current room' do
+      @player.current_exits.should == [2]
     end
-  end
 
-  context 'in order to try different routes' do
-    it 'should be able to go back to the previous room' do
-      room1 = double('Room', :type => :whatever)
-      room2 = double('Room', :type => :whatever)
+    context 'but not visit same rooms twice' do
+      it 'should remember visited rooms' do
+        room = double('Room', :id => 2)
 
-      @player.enter_room(room1)
-      @player.previous_room.should be nil
-
-      @player.enter_room(room2)
-      @player.previous_room.should be room1
+        @player.visited?(room).should be false
+        @player.enter_room(room)
+        @player.visited?(room).should be true
+      end
     end
+
+    context 'and be able to get out of dead ends' do
+      it 'should remember previous room'
+    end
+
+    #it 'should go back to previous room if there are no exits'
+
+    #it 'should go back to previous room if all exits are visited'
   end
 
-  context 'in order to comply with the rools' do
-    it 'should not be possible to enter rooms other than exits from the current room OR previous room'
+  context 'in order to recognize defeat' do
+    it 'should know if all paths are explored'
+#      @player.instance_variable_set(:@previous_room, nil)
+#      @player.instance_variable_set(:@visited_rooms, [2])
+#
+#      @player.result.should eq :lost
   end
-
-  context 'in order to not loop endlessly' do
-    it 'should not follow visted exits'
-  end
-
-  context 'in order to complete a certain path' do
-    it 'should not go back from a room before all exits are visited'
-  end
-
-  it 'should admit defeat if there are no possible moves'
 
 end
