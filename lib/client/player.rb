@@ -61,7 +61,7 @@ class Player
   attr_reader :current_room
 
   def previous_room
-    @dungeon_map.lookup_entrance_to(current_room)
+    @dungeon_map.lookup_entrance_to(current_room.id)
   end
 
   def current_exits

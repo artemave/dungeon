@@ -4,9 +4,11 @@ require 'client/player'
 describe Player do
   before do
     @dungeon = double('Dungeon')
+    @dungeon_map = double('DungeonMap', :put => nil, :reset => nil, :lookup => nil)
     @room = double('Room', :id => 1, :exits => [2], :type => :room)
     @player = Player.new
     @player.instance_variable_set(:@dungeon, @dungeon)
+    @player.instance_variable_set(:@dungeon_map, @dungeon_map)
     @player.instance_variable_set(:@current_room, @room)
   end
 
@@ -52,14 +54,22 @@ describe Player do
       it 'should remember visited rooms' do
         room = double('Room', :id => 2)
 
+        @dungeon_map.should_receive(:lookup).with(room.id).and_return(nil)
         @player.visited?(room).should be false
+
+        @dungeon_map.should_receive(:put).with(room, @room)
         @player.enter_room(room)
+
+        @dungeon_map.should_receive(:lookup).with(room.id).and_return(room)
         @player.visited?(room).should be true
       end
     end
 
     context 'and be able to get out of dead ends' do
-      it 'should remember previous room'
+      it 'should remember previous room' do
+        @dungeon_map.should_receive(:lookup_entrance_to).with(@room.id).and_return(@room)
+        @player.previous_room.should be @room
+      end
     end
 
     #it 'should go back to previous room if there are no exits'
