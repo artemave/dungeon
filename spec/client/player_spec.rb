@@ -26,6 +26,7 @@ describe Player do
   context 'in order to win the game' do
     it 'should find treasure chamber' do
       treasure_chamber = double('Room', :type => :treasure_chamber)
+      @dungeon_map.stub(:unvisited_exits).and_return([1])
 
       @player.result.should_not eq :won
       @player.instance_variable_set(:@current_room, treasure_chamber)
@@ -78,11 +79,11 @@ describe Player do
   end
 
   context 'in order to recognize defeat' do
-    it 'should know if all paths are explored'
-#      @player.instance_variable_set(:@previous_room, nil)
-#      @player.instance_variable_set(:@visited_rooms, [2])
-#
-#      @player.result.should eq :lost
+    it 'should know if all paths are explored' do
+      @dungeon_map.should_receive(:unvisited_exits).and_return([1])
+      @player.result.should_not eq :lost
+      @dungeon_map.should_receive(:unvisited_exits).and_return([])
+      @player.result.should eq :lost
+    end
   end
-
 end

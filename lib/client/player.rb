@@ -8,6 +8,7 @@ class Player
   def enter_dungeon(dungeon)
     @dungeon = dungeon
     @dungeon_map.reset
+    @result = nil
     enter_room(@dungeon.entrance)
   end
 
@@ -33,10 +34,11 @@ class Player
   end
 
   def result
-    case current_room.type
-    when :treasure_chamber
-      :won
-    end
+    @result ||= if current_room.type == :treasure_chamber
+                  :won
+                elsif @dungeon_map.unvisited_exits.empty?
+                  :lost
+                end
   end
 
   def visited?(room)
