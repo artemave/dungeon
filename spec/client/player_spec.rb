@@ -4,10 +4,9 @@ require 'client/player'
 describe Player do
   before do
     @dungeon = double('Dungeon')
-    @dungeon_map = double('DungeonMap', :put => nil, :reset => nil, :lookup => nil)
+    @dungeon_map = double('DungeonMap', :put => nil, :erase => nil, :lookup => nil)
     @room = double('Room', :id => 1, :exits => [2], :type => :room)
-    @player = Player.new
-    @player.instance_variable_set(:@dungeon, @dungeon)
+    @player = Player.new(@dungeon)
     @player.instance_variable_set(:@dungeon_map, @dungeon_map)
     @player.instance_variable_set(:@current_room, @room)
   end
@@ -18,7 +17,7 @@ describe Player do
       @dungeon.stub(:entrance).and_return(entrance)
 
       @player.current_room.should_not be entrance
-      @player.enter_dungeon(@dungeon)
+      @player.enter_dungeon
       @player.current_room.should be entrance
     end
   end

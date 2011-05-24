@@ -1,14 +1,12 @@
 require 'client/dungeon_map'
 
 class Player
-  def initialize
+  def initialize(dungeon)
     @dungeon_map = DungeonMap.new
+    @dungeon = dungeon
   end
 
-  def enter_dungeon(dungeon)
-    @dungeon = dungeon
-    @dungeon_map.reset
-    @result = nil
+  def enter_dungeon
     enter_room(@dungeon.entrance)
   end
 
