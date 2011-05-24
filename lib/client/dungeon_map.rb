@@ -2,11 +2,12 @@ require 'tree'
 
 class DungeonMap
   def start(entrance)
-    @tree = Tree::TreeNode.new(entrance.id, entrance)
+    @tree = Tree::TreeNode.new(entrance.id.to_s, entrance)
   end
 
   def put(room, prev_room)
-    @tree[prev_room.id] << Tree::TreeNode.new(room.id, room)
+    parent_node = search_node(prev_room.id)
+    parent_node << Tree::TreeNode.new(room.id.to_s, room)
   end
 
   def lookup(room_id)
@@ -22,11 +23,9 @@ class DungeonMap
   private
 
     def search_node(name)
-      return if not @tree
-
       node = nil
       @tree.each do |n|
-        node = n.name == name && n
+        node = n if n.name == name.to_s
         break if node
       end
       node
