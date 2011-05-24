@@ -18,7 +18,12 @@ class Player
                     else
                       room
                     end
-    @dungeon_map.put(current_room, prev_room)
+
+    if prev_room.nil?
+      @dungeon_map.start(current_room)
+    else
+      @dungeon_map.put(current_room, prev_room)
+    end
   end
 
   attr_reader :current_room

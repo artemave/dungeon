@@ -4,7 +4,7 @@ require 'client/player'
 describe Player do
   before do
     @dungeon = double('Dungeon')
-    @dungeon_map = double('DungeonMap', :put => nil, :erase => nil, :lookup => nil)
+    @dungeon_map = double('DungeonMap', :put => nil, :lookup => nil)
     @room = double('Room', :id => 1, :exits => [2], :type => :room)
     @player = Player.new(@dungeon)
     @player.instance_variable_set(:@dungeon_map, @dungeon_map)
@@ -14,8 +14,10 @@ describe Player do
   context 'in order to start the game' do
     it 'should enter the dungeon' do
       entrance = double('Room', :id => 1)
+      @player.instance_variable_set(:@current_room, nil)
       @dungeon.stub(:entrance).and_return(entrance)
 
+      @dungeon_map.should_receive(:start).with(entrance) #FIXME this seems out of place; dedicated spec may be?
       @player.current_room.should_not be entrance
       @player.enter_dungeon
       @player.current_room.should be entrance
