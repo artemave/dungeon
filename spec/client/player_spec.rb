@@ -4,8 +4,8 @@ require 'client/player'
 describe Player do
   before do
     @dungeon = double('Dungeon')
-    @dungeon_map = double('DungeonMap', :put => nil, :lookup => nil)
-    @room = double('Room', :id => 1, :exits => [2], :type => :room)
+    @dungeon_map = double('DungeonMap', put: nil, lookup: nil)
+    @room = double('Room', id: 1, exits: [2], type: :room)
     @player = Player.new(@dungeon)
     @player.instance_variable_set(:@dungeon_map, @dungeon_map)
     @player.instance_variable_set(:@current_room, @room)
@@ -13,7 +13,7 @@ describe Player do
 
   context 'in order to start the game' do
     it 'should enter the dungeon' do
-      entrance = double('Room', :id => 1)
+      entrance = double('Room', id: 1)
       @player.instance_variable_set(:@current_room, nil)
       @dungeon.stub(:entrance).and_return(entrance)
 
@@ -26,7 +26,7 @@ describe Player do
 
   context 'in order to win the game' do
     it 'should find treasure chamber' do
-      treasure_chamber = double('Room', :type => :treasure_chamber)
+      treasure_chamber = double('Room', type: :treasure_chamber)
       @dungeon_map.stub(:unvisited_exits).and_return([1])
 
       @player.result.should_not eq :won
@@ -38,7 +38,7 @@ describe Player do
 
   context 'in order to find the treasure chamber' do
     it 'should move to other rooms' do
-      next_room = double('Room', :id => 2)
+      next_room = double('Room', id: 2)
       @dungeon.stub(:reveal_room).with(next_room.id).and_return(next_room)
 
       @player.current_room.should_not be next_room
@@ -54,7 +54,7 @@ describe Player do
 
     context 'but not visit same rooms twice' do
       it 'should remember visited rooms' do
-        room = double('Room', :id => 2)
+        room = double('Room', id: 2)
 
         @dungeon_map.should_receive(:lookup).with(room.id).and_return(nil)
         @player.visited?(room).should be false

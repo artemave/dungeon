@@ -10,7 +10,7 @@ describe DungeonMap do
 
   context 'in order for player to be able to track his path' do
     it 'should allow to start map with entrance' do
-      entrance = double('Room', :id => 1)
+      entrance = double('Room', id: 1)
 
       @map.start(entrance)
 
@@ -21,10 +21,10 @@ describe DungeonMap do
     end
 
     it 'should allow to put room on the map' do
-      entrance = double('Room', :id => 1)
+      entrance = double('Room', id: 1)
       @map.instance_variable_set(:@tree, Tree::TreeNode.new("1", entrance))
-      room1 = double('Room', :id => 2)
-      room2 = double('Room', :id => 3)
+      room1 = double('Room', id: 2)
+      room2 = double('Room', id: 3)
 
       @map.put(room1, entrance)
       @map.put(room2, room1)
@@ -34,8 +34,8 @@ describe DungeonMap do
     end
 
     it 'should allow to lookup room' do
-      room = double('Room', :id => 2)
-      tree = Tree::TreeNode.new("1", double('Room', :id => 1))
+      room = double('Room', id: 2)
+      tree = Tree::TreeNode.new("1", double('Room', id: 1))
       @map.instance_variable_set(:@tree, tree)
 
       @map.lookup(room.id).should be nil
@@ -44,8 +44,8 @@ describe DungeonMap do
     end
 
     it 'should allow to lookup entrance to particular room' do
-      entrance = double('Room', :id => 1)
-      ( tree = Tree::TreeNode.new("1", entrance) ) << Tree::TreeNode.new("2", double('Room', :id => 2))
+      entrance = double('Room', id: 1)
+      ( tree = Tree::TreeNode.new("1", entrance) ) << Tree::TreeNode.new("2", double('Room', id: 2))
       @map.instance_variable_set(:@tree, tree)
 
       @map.lookup_entrance_to(1).should be nil
@@ -55,8 +55,8 @@ describe DungeonMap do
 
   context 'in order for player to be able to recognize defeat' do
     it 'should keep track of unvisited exits' do
-      tree = Tree::TreeNode.new("1", double('Room', :id => 1, :exits => [2,3]))
-      tree << Tree::TreeNode.new("2", double('Room', :id => 2, :exits => [4]))
+      tree = Tree::TreeNode.new("1", double('Room', id: 1, exits: [2,3]))
+      tree << Tree::TreeNode.new("2", double('Room', id: 2, exits: [4]))
       @map.instance_variable_set(:@tree, tree)
 
       @map.unvisited_exits.should == [3,4]
