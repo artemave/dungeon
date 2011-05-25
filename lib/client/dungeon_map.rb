@@ -20,6 +20,17 @@ class DungeonMap
     node.parent && node.parent.content
   end
 
+  def unvisited_exits
+    visited_room_ids = []
+    all_exits = []
+
+    @tree.each do |n|
+      visited_room_ids << n.content.id
+      all_exits += n.content.exits
+    end
+    all_exits - visited_room_ids
+  end
+
   private
 
     def search_node(name)
