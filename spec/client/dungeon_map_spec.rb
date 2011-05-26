@@ -45,11 +45,15 @@ describe DungeonMap do
 
     it 'should allow to lookup entrance to particular room' do
       entrance = double('Room', id: 1)
-      ( tree = Tree::TreeNode.new("1", entrance) ) << Tree::TreeNode.new("2", double('Room', id: 2))
+      room = double('Room', id: 2)
+      ( tree = Tree::TreeNode.new("1", entrance) ) << Tree::TreeNode.new("2", room) << Tree::TreeNode.new('4', double('Room', id: 4))
+      tree << Tree::TreeNode.new("3", double('Room', id: 3))
       @map.instance_variable_set(:@tree, tree)
 
       @map.lookup_entrance_to(1).should be nil
       @map.lookup_entrance_to(2).should be entrance
+      @map.lookup_entrance_to(3).should be entrance
+      @map.lookup_entrance_to(4).should be room
     end
   end
 
