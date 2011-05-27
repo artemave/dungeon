@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/perrym5/dupe.git
+  revision: c771d0a0241a15da6afe8f89778f1387950a3841
+  specs:
+    dupe (0.6.0)
+      activeresource (>= 3.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -28,6 +35,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeresource
+  dupe!
   in_enumerable
   rspec
   rubytree
