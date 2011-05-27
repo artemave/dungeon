@@ -1,10 +1,13 @@
 require './spec/spec_helper'
+require 'client/player'
+require 'client/dungeon'
+require 'client/strategy'
 
 describe 'adventure game' do
   before do
     @player = Player.new
     @dungeon = Dungeon.new
-    @player.strategy = GameStrategy::NoBrainer.new
+    @player.strategy = Strategy::NoBrainer.new
 
     Dupe.create :room, exits: [2]
     Dupe.create :room, exits: [1,3,4]
@@ -23,24 +26,24 @@ describe 'adventure game' do
     @player.stub(:dungeon).and_return(@dungeon)
     @player.stub(:current_room).and_return(@dungeon.entrance)
 
-    @player.next_room.id.should eq 2
-    @player.next_room.id.should be_in [3, 4]
-    @player.next_room.id.should be_in [3, 4]
-    @player.next_room.id.should eq 2
-    @player.next_room.id.should eq 1
-    @player.next_room.id.should eq nil
+    @player.next_room!.id.should eq 2
+    @player.next_room!.id.should be_in [3, 4]
+    @player.next_room!.id.should be_in [3, 4]
+    @player.next_room!.id.should eq 2
+    @player.next_room!.id.should eq 1
+    @player.next_room!.id.should eq nil
   end
 
   it 'is won when player found treasure chamber' do
     @player.stub(:dungeon).and_return(@dungeon)
     @player.stub(:current_room).and_return(@dungeon.entrance)
 
-    @player.next_room
+    @player.next_room!
     @player.result.should_not eq :won
-    @player.next_room
+    @player.next_room!
     @player.result.should_not eq :won
-    @player.next_room
-    @player.next_room
+    @player.next_room!
+    @player.next_room!
     @player.result.should eq :won
   end
 
@@ -50,7 +53,7 @@ describe 'adventure game' do
     treasure_chamber = Dupe.find(:room) { |r| r.type == :treasure_chamber }
     treasure_chamber.stub(:type).and_return(:room)
 
-    7.times do { @player.next_room }
+    7.times do { @player.next_room! }
     @player.result.should eq :lost
   end
 end
