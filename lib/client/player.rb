@@ -12,6 +12,7 @@ class Player
   def enter(dungeon)
     @dungeon = dungeon
     @current_room = dungeon.entrance
+    dungeon_map.start(@current_room)
   end
 
   def next_room!

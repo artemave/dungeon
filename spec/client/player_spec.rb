@@ -4,7 +4,7 @@ require 'client/player'
 describe Player do
   before do
     @dungeon = double('Dungeon')
-    @dungeon_map = double('DungeonMap', put: nil)
+    @dungeon_map = double('DungeonMap', put: nil, start: nil)
 
     @player = Player.new
     @player.stub(:dungeon).and_return(@dungeon)
@@ -15,11 +15,9 @@ describe Player do
   end
 
   it 'should be able to enter the dungeon' do
-    entrance = double('Room')
-
-    @dungeon.should_receive(:entrance).and_return(entrance)
+    @dungeon.should_receive(:entrance).and_return(@room)
     @player.enter(@dungeon)
-    @player.current_room.should be entrance
+    @player.current_room.should be @room
   end
   
   it 'should be able to move to next room' do
@@ -31,11 +29,14 @@ describe Player do
   end
 
   it "should remember visited rooms" do
-    @player.stub(:current_room).and_return(@room)
-    next_room = double('Room', id: 2)
-    @player.ai.stub(:suggest_next_room).and_return(2)
-    @player.dungeon.stub(:get_room).with(2).and_return(@next_room)
+    #when entering dungeon
+    @dungeon.stub(:entrance).and_return(@room)
+    @player.dungeon_map.should_receive(:start).with(@room)
+    @player.enter(@dungeon)
 
+    #when visiting rooms
+    @player.ai.stub(:suggest_next_room).and_return(2)
+    @player.dungeon.stub(:get_room).and_return(@next_room)
     @player.dungeon_map.should_receive(:put).with(@next_room, @room)
     @player.next_room!
   end
