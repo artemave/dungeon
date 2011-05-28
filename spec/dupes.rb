@@ -1,4 +1,4 @@
-Get %r{/dungeon/entrance\.xml} do
+Get %r{/entrance\.xml} do
   Dupe.find(:room) {|r| r.id == 1}
 end
 
