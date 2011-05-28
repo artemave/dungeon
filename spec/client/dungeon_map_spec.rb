@@ -58,12 +58,12 @@ describe DungeonMap do
   end
 
   context 'in order for player to be able to recognize defeat' do
-    it 'should keep track of unvisited exits' do
+    it 'should remember visited rooms' do
       tree = Tree::TreeNode.new("1", double('Room', id: 1, exits: [2,3]))
       tree << Tree::TreeNode.new("2", double('Room', id: 2, exits: [4]))
       @map.instance_variable_set(:@tree, tree)
 
-      @map.unvisited_exits.should == [3,4]
+      @map.visited_rooms.should == [1,2]
     end
   end
 end

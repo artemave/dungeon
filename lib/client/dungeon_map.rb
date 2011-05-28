@@ -20,15 +20,12 @@ class DungeonMap
     node.parent && node.parent.content
   end
 
-  def unvisited_exits
-    visited_room_ids = []
-    all_exits = []
-
-    @tree.each do |n|
-      visited_room_ids << n.content.id
-      all_exits += n.content.exits
+  def visited_rooms
+    [].tap do |visited_room_ids|
+      @tree.each do |n|
+        visited_room_ids << n.content.id
+      end
     end
-    all_exits - visited_room_ids
   end
 
   private

@@ -25,7 +25,7 @@ class Player
   def result
     @result ||= if current_room.type == :treasure_chamber
                   :won
-                elsif dungeon_map.unvisited_exits.empty?
+                elsif ai.suggest_next_room.nil?
                   :lost
                 end
   end

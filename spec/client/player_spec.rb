@@ -51,7 +51,7 @@ describe Player do
 
   it "should be able to recognize defeat" do
     @player.stub(:current_room).and_return(@room)
-    @player.dungeon_map.should_receive(:unvisited_exits).and_return([])
+    @player.ai.should_receive(:suggest_next_room).and_return(nil)
     @player.result.should eq :lost
   end
 end
