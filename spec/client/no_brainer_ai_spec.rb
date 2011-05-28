@@ -1,4 +1,4 @@
-describe Strategy::NoBrainer do
+describe AI::NoBrainer do
   context "given there are unvisited exits from a room" do
     it "should follow either of them" do
       

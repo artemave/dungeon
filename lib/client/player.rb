@@ -1,50 +1,31 @@
 require 'client/dungeon_map'
+require 'client/ai'
 
 class Player
-  def initialize(dungeon)
+  attr_reader :current_room, :dungeon_map, :ai, :dungeon
+
+  def initialize
     @dungeon_map = DungeonMap.new
+    @ai = AI::NoBrainer.new(self)
+  end
+
+  def enter(dungeon)
     @dungeon = dungeon
+    @current_room = dungeon.entrance
   end
 
-  def enter_dungeon
-    enter_room(@dungeon.entrance)
-  end
-
-  def enter_room(room)
+  def next_room!
     prev_room = current_room
-
-    @current_room = if room.kind_of?(Integer)
-                      @dungeon_map.lookup(room) || @dungeon.reveal_room(room)
-                    else
-                      room
-                    end
-
-    if prev_room.nil?
-      @dungeon_map.start(current_room)
-    else
-      @dungeon_map.put(current_room, prev_room)
-    end
-  end
-
-  attr_reader :current_room
-
-  def previous_room
-    @dungeon_map.lookup_entrance_to(current_room.id)
-  end
-
-  def current_exits
-    current_room.exits
+    @current_room = dungeon.get_room(ai.suggest_next_room)
+    dungeon_map.put(@current_room, prev_room)
+    @current_room
   end
 
   def result
     @result ||= if current_room.type == :treasure_chamber
                   :won
-                elsif @dungeon_map.unvisited_exits.empty?
+                elsif dungeon_map.unvisited_exits.empty?
                   :lost
                 end
-  end
-
-  def visited?(room)
-    !!@dungeon_map.lookup(room.id)
   end
 end

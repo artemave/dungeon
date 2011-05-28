@@ -1,4 +1,5 @@
 $:.unshift(File.dirname(__FILE__) + '../lib')
 
 require 'in_enumerable'
-require './dupes'
+require 'dupe'
+require 'dupes'

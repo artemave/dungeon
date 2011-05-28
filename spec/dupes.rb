@@ -2,7 +2,7 @@ Get %r{/dungeon/entrance\.xml} do
   Dupe.find(:room) {|r| r.id == 1}
 end
 
-Dupe.define :room |attrs| do
+Dupe.define :room do |attrs|
   attrs.exits []
-  attre.type :room
+  attrs.type :room
 end

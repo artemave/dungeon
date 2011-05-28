@@ -1,13 +1,11 @@
 require './spec/spec_helper'
 require 'client/player'
 require 'client/dungeon'
-require 'client/strategy'
 
 describe 'adventure game' do
   before do
     @player = Player.new
     @dungeon = Dungeon.new
-    @player.strategy = Strategy::NoBrainer.new
 
     Dupe.create :room, exits: [2]
     Dupe.create :room, exits: [1,3,4]
@@ -22,7 +20,7 @@ describe 'adventure game' do
     @player.current_room.should be @dungeon.entrance
   end
 
-  it 'consists of player exploring dungeon according to chosen strategy' do
+  it 'consists of player exploring dungeon by visiting rooms' do
     @player.stub(:dungeon).and_return(@dungeon)
     @player.stub(:current_room).and_return(@dungeon.entrance)
 
