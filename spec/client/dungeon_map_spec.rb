@@ -10,9 +10,9 @@ describe DungeonMap do
 
   context 'in order for player to be able to track his path' do
     it 'should allow to start map with entrance' do
-      entrance = double('Room', id: 1)
+      entrance = double('Room', id: 1, entrance: nil)
 
-      @map.start(entrance)
+      @map.put(entrance)
 
       tree = @map.instance_variable_get(:@tree)
       tree.should be_is_root
@@ -21,39 +21,16 @@ describe DungeonMap do
     end
 
     it 'should allow to put room on the map' do
-      entrance = double('Room', id: 1)
+      entrance = double('Room', id: 1, entrance: nil)
       @map.instance_variable_set(:@tree, Tree::TreeNode.new("1", entrance))
-      room1 = double('Room', id: 2)
-      room2 = double('Room', id: 3)
+      room1 = double('Room', id: 2, entrance: entrance)
+      room2 = double('Room', id: 3, entrance: room1)
 
-      @map.put(room1, entrance)
-      @map.put(room2, room1)
+      @map.put(room1)
+      @map.put(room2)
 
       tree = @map.instance_variable_get(:@tree)
       tree[room1.id.to_s][room2.id.to_s].content.should be room2
-    end
-
-    it 'should allow to lookup room' do
-      room = double('Room', id: 2)
-      tree = Tree::TreeNode.new("1", double('Room', id: 1))
-      @map.instance_variable_set(:@tree, tree)
-
-      @map.lookup(room.id).should be nil
-      tree << Tree::TreeNode.new("2", room)
-      @map.lookup(room.id).should be room
-    end
-
-    it 'should allow to lookup entrance to particular room' do
-      entrance = double('Room', id: 1)
-      room = double('Room', id: 2)
-      ( tree = Tree::TreeNode.new("1", entrance) ) << Tree::TreeNode.new("2", room) << Tree::TreeNode.new('4', double('Room', id: 4))
-      tree << Tree::TreeNode.new("3", double('Room', id: 3))
-      @map.instance_variable_set(:@tree, tree)
-
-      @map.lookup_entrance_to(1).should be nil
-      @map.lookup_entrance_to(2).should be entrance
-      @map.lookup_entrance_to(3).should be entrance
-      @map.lookup_entrance_to(4).should be room
     end
   end
 

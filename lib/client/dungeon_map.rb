@@ -1,23 +1,13 @@
 require 'tree'
 
 class DungeonMap
-  def start(entrance)
-    @tree = Tree::TreeNode.new(entrance.id.to_s, entrance)
-  end
-
-  def put(room, prev_room)
-    parent_node = search_node(prev_room.id)
-    parent_node << Tree::TreeNode.new(room.id.to_s, room)
-  end
-
-  def lookup(room_id)
-    node = search_node(room_id) or return
-    node.content
-  end
-
-  def lookup_entrance_to(room_id)
-    node = search_node(room_id) or return
-    node.parent && node.parent.content
+  def put(room)
+    if room.entrance and not mapped?(room)
+      parent_node = search_node(room.entrance.id)
+      parent_node << Tree::TreeNode.new(room.id.to_s, room)
+    else # dungeon entrance -> root node
+      @tree = Tree::TreeNode.new(room.id.to_s, room)
+    end
   end
 
   def visited_rooms
@@ -29,6 +19,10 @@ class DungeonMap
   end
 
   private
+
+    def mapped?(room)
+      !!search_node(room.id)
+    end
 
     def search_node(name)
       node = nil

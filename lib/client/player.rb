@@ -1,3 +1,4 @@
+require 'active_support/core_ext/module/delegation'
 require 'client/dungeon_map'
 require 'client/ai'
 
@@ -6,21 +7,30 @@ class Player
 
   def initialize
     @dungeon_map = DungeonMap.new
-    @ai = AI::NoBrainer.new(self)
+    @ai = AI::DepthFirstSearch.new(self)
   end
 
   def enter(dungeon)
     @dungeon = dungeon
     @current_room = dungeon.entrance
-    dungeon_map.start(@current_room)
+    dungeon_map.put(@current_room)
   end
 
   def next_room!
+    suggested_room_id = ai.suggest_next_room
+    return unless suggested_room_id
+
     prev_room = current_room
-    @current_room = dungeon.get_room(ai.suggest_next_room)
-    dungeon_map.put(@current_room, prev_room)
-    @current_room
+    room = dungeon.get_room(suggested_room_id)
+
+    if not room.id.in? visited_rooms
+      room.entrance = prev_room
+      dungeon_map.put(room)
+    end
+    @current_room = room
   end
+
+  delegate :visited_rooms, to: :dungeon_map
 
   def result
     @result ||= if current_room.type == :treasure_chamber
