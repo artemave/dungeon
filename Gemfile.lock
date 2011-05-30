@@ -35,6 +35,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeresource
+  activesupport
   dupe!
   in_enumerable
   rspec

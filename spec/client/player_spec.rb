@@ -30,17 +30,9 @@ describe Player do
 
   context 'in order to not get lost' do
     describe 'when entering dungeon' do
-      before do
-        @dungeon.stub(:entrance).and_return(@room)
-      end
-
       it 'should remember entrance' do
+        @dungeon.stub(:entrance).and_return(@room)
         @player.dungeon_map.should_receive(:put).with(@room)
-        @player.enter(@dungeon)
-      end
-
-      it "should not remember room entrance" do
-        @room.should_not_receive('entrance=')
         @player.enter(@dungeon)
       end
     end
@@ -71,7 +63,7 @@ describe Player do
     end
   end
 
-  it 'should be able to see if he/she has won' do
+  it 'should win when in treasure chamber' do
     treasure_chamber = double('Room')
 
     @player.should_receive(:current_room).and_return(treasure_chamber)
@@ -79,7 +71,7 @@ describe Player do
     @player.result.should eq :won
   end
 
-  it "should be able to recognize defeat" do
+  it "should lose when there is nowhere else to go" do
     @player.stub(:current_room).and_return(@room)
     @player.ai.should_receive(:suggest_next_room).and_return(nil)
     @player.result.should eq :lost

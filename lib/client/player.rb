@@ -17,17 +17,16 @@ class Player
   end
 
   def next_room!
-    suggested_room_id = ai.suggest_next_room
-    return unless suggested_room_id
+    if suggested_room_id = ai.suggest_next_room
+      prev_room = current_room
+      room = dungeon.get_room(suggested_room_id)
 
-    prev_room = current_room
-    room = dungeon.get_room(suggested_room_id)
-
-    if not room.id.in? visited_rooms
-      room.entrance = prev_room
-      dungeon_map.put(room)
+      if not room.id.in? visited_rooms
+        room.entrance = prev_room
+        dungeon_map.put(room)
+      end
+      @current_room = room
     end
-    @current_room = room
   end
 
   delegate :visited_rooms, to: :dungeon_map

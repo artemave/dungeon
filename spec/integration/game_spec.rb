@@ -7,6 +7,10 @@ describe 'adventure game' do
     @player = Player.new
     @dungeon = Dungeon.new
 
+    # dungeon:
+    # 1 - 2 - 3
+    #     |
+    #     4
     Dupe.create :room, exits: [2]
     Dupe.create :room, exits: [1,3,4]
     Dupe.create :room, exits: [2]
@@ -21,9 +25,6 @@ describe 'adventure game' do
   end
 
   it 'consists of player exploring dungeon by visiting rooms' do
-    # 1 - 2 - 3
-    #     |
-    #     4
     @player.enter(@dungeon)
     @player.next_room!.id.should eq 2
     @player.next_room!.id.should be_in [3, 4]
@@ -38,10 +39,8 @@ describe 'adventure game' do
     @player.enter(@dungeon)
 
     @player.next_room!
-    @player.result.should_not eq :won
     @player.next_room!
-    @player.result.should_not eq :won
-    @player.next_room!
+    @player.result
     @player.next_room!
     @player.result.should eq :won
   end
