@@ -8,11 +8,11 @@ describe AI::DepthFirstSearch do
   end
 
   context "given there are unvisited exits from a room" do
-    it "should choose either of them" do
+    it "should choose first" do
       @ai.player.should_receive(:current_room).and_return(double('Room', id: 2, exits: [1,3,4,5]))
       @ai.player.should_receive(:visited_rooms).and_return([1,2,5])
 
-      @ai.suggest_next_room.should be_in [3,4]
+      @ai.suggest_next_room.should be 3
     end
   end
 

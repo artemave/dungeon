@@ -9,12 +9,13 @@ describe 'adventure game' do
 
     # dungeon:
     # 1 - 2 - 3
-    #     |
-    #     4
+    #     |   |
+    #    *4*- 5
     Dupe.create :room, exits: [2]
     Dupe.create :room, exits: [1,3,4]
-    Dupe.create :room, exits: [2]
-    Dupe.create :room, type: :treasure_chamber, exits: [2]
+    Dupe.create :room, exits: [2,5]
+    Dupe.create :room, type: :treasure_chamber, exits: [2,5]
+    Dupe.create :room, exits: [3,4]
   end
 
   it 'starts with player entering dungeon' do
@@ -27,9 +28,11 @@ describe 'adventure game' do
   it 'consists of player exploring dungeon by visiting rooms' do
     @player.enter(@dungeon)
     @player.next_room!.id.should eq 2
-    @player.next_room!.id.should be_in [3, 4]
-    @player.next_room!.id.should eq 2
-    @player.next_room!.id.should be_in [3, 4]
+    @player.next_room!.id.should eq 3
+    @player.next_room!.id.should eq 5
+    @player.next_room!.id.should eq 4
+    @player.next_room!.id.should eq 5
+    @player.next_room!.id.should eq 3
     @player.next_room!.id.should eq 2
     @player.next_room!.id.should eq 1
     @player.next_room!.should eq nil
@@ -40,7 +43,7 @@ describe 'adventure game' do
 
     @player.next_room!
     @player.next_room!
-    @player.result
+    @player.next_room!
     @player.next_room!
     @player.result.should eq :won
   end
@@ -50,7 +53,7 @@ describe 'adventure game' do
     treasure_chamber = Dupe.find(:room) { |r| r.type == :treasure_chamber }
     treasure_chamber.stub(:type).and_return(:room)
 
-    7.times { @player.next_room! }
+    9.times { @player.next_room! }
     @player.result.should eq :lost
   end
 end

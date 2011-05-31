@@ -10,7 +10,7 @@ module AI
       current_room = player.current_room
       visited_rooms = player.visited_rooms
 
-      ( current_room.exits - visited_rooms ).sample || current_room.entrance.try(:id)
+      ( current_room.exits - visited_rooms ).sort.first || current_room.entrance.try(:id)
     end
   end
 end
