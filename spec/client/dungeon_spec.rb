@@ -18,9 +18,15 @@ describe Dungeon do
 
   it "should reveal rooms" do
     Room.should_receive(:find).with(1).and_return(@room)
-    room = @dungeon.get_room(1)
+    room = @dungeon.enter_room(1)
 
     room.id.should eq 1
     room.exits.should eq [2]
+  end
+
+  it "should keep track of revealed rooms" do
+    Room.stub(:find).and_return(@room)
+    @dungeon.enter_room(1)
+    @dungeon.visited_rooms.should == { 1 => @room }
   end
 end
