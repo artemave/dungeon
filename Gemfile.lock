@@ -28,7 +28,6 @@ GEM
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
-    rubytree (0.8.1)
 
 PLATFORMS
   ruby
@@ -39,4 +38,3 @@ DEPENDENCIES
   dupe!
   in_enumerable
   rspec
-  rubytree

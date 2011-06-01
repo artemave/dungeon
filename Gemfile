@@ -3,7 +3,6 @@ source :rubygems
 gem 'activesupport'
 gem 'activeresource'
 gem 'in_enumerable'
-gem 'rubytree'
 
 group :test do
   gem 'rspec'
